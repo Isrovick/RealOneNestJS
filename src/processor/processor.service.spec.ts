@@ -36,3 +36,24 @@ describe('ProcessorService', () => {
     expect(isFilePath).toBe(false);
   });
 });
+
+describe('ProcessorService parseEmail', () => {
+    let service: ProcessorService;
+
+    beforeEach(async () => {
+        const module: TestingModule = await Test.createTestingModule({
+        providers: [ProcessorService],
+        }).compile();
+
+        service = module.get<ProcessorService>(ProcessorService);
+    });
+
+    it('should return parsed email', async function () {
+      const cwd = process.cwd()
+      const parsed = await service.parseEmail('./test/files/test.eml');
+      expect(parsed).toBeDefined();
+      expect(parsed.from.text).toBe('Israel Morales <israel.morales.dev@gmail.com>');
+      expect(parsed.to.text).toBe('isrovick@gmail.com');
+      expect(parsed.attachments.length).toBe(3);
+    });
+});

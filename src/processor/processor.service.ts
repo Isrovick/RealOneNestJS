@@ -1,5 +1,5 @@
 import {BadRequestException, Injectable} from '@nestjs/common';
-
+import { simpleParser } from 'mailparser';
 @Injectable()
 export class ProcessorService {
     isUrl(str: string): boolean {
@@ -11,10 +11,16 @@ export class ProcessorService {
         return !this.isUrl(str);
     }
 
-    obtainJSONFromAttachment(attachment: any): any {
-        const {data} = attachment;
-        const {attachmentId, name, size, url} = data;
-        return {attachmentId, name, size, url};
-    }
+    async parseEmail(filePath) {
+        const fs = require('fs');
+        const eml = fs.readFileSync(filePath, 'utf-8');
 
+        try {
+            const parsed = await simpleParser(eml);
+            return parsed;
+        } catch (error) {
+            throw new Error(`Failed to parse .eml file: ${error.message}`);
+        }
+        return;
+    }
 }
