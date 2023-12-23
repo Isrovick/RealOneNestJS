@@ -32,13 +32,13 @@ export class ProcessorController {
   async processEML(
     @Body() body,
     @UploadedFiles()
-    files: {
+    filePath: {
       file?: Express.Multer.File[];
     },
   ): Promise<any> {
-    const { filePath } = body;
-    const _file = files?.file?.shift();
+    const { fileUrl } = body;
+    const _file = filePath?.file?.shift();
 
-    return this.processorService.processEML(filePath, _file);
+    return this.processorService.processEML(fileUrl, _file);
   }
 }

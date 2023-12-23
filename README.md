@@ -58,6 +58,25 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
+## Manual
+
+In order to test the endpoint, make a POST request to the following URL:
+
+```angular2html
+http://localhost:3000/processor
+```
+
+ith one of this two params:
+
+    * fileUrl: the URL from the .EML file (URL string Type input)
+    * file: the file Path from the .EML file (file Type input)
+
+![img.png](img.png)
+
+You should be able to see the expected response, which contains the corresponding JSON's contained in the .eml file (example showend below).
+
+![img_1.png](img_1.png)
+
 ## Support
 
 Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
