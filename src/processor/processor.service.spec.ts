@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProcessorService } from './processor.service';
-import { HttpModule } from '@nestjs/axios';
+import { HttpModule, HttpService } from '@nestjs/axios';
 
 describe('ProcessorService', () => {
   let service: ProcessorService;
@@ -8,7 +8,17 @@ describe('ProcessorService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [HttpModule],
-      providers: [ProcessorService],
+      providers: [
+        ProcessorService,
+        {
+          provide: HttpService,
+          useValue: {
+            mockedFunction: jest
+              .fn()
+              .mockResolvedValue('./test/cases/1703294487720.eml'),
+          },
+        },
+      ],
     }).compile();
 
     service = module.get<ProcessorService>(ProcessorService);
@@ -44,7 +54,17 @@ describe('ProcessorService parseEmail', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ProcessorService],
+      providers: [
+        ProcessorService,
+        {
+          provide: HttpService,
+          useValue: {
+            mockedFunction: jest
+              .fn()
+              .mockResolvedValue('./test/cases/1703294487720.eml'),
+          },
+        },
+      ],
     }).compile();
 
     service = module.get<ProcessorService>(ProcessorService);
@@ -67,15 +87,16 @@ describe('ProcessorService parseEmail', () => {
     expect(links.length).toBeGreaterThan(0);
   });
 
-  // it('should return all jsons from links', async function () {
-  //   const parsed = await service.parseEmail('./test/files/test.eml');
-  //   const jsons = await service.getJSONFromLinks(parsed);
-  //   expect(jsons.length).toBeGreaterThan(0);
-  // });
-
   it('should return all jsons from html', async function () {
     const parsed = await service.parseEmail('./test/files/test.eml');
     const jsons = service.getJSONFromHTML(parsed);
     expect(jsons.length).toBeGreaterThan(0);
+  });
+
+  it('should get unique links from html', async function () {
+    const parsed = await service.parseEmail('./test/files/test.eml');
+    const links = service.getLinksFromHTML(parsed);
+    expect(links.length).toBe(1);
+    expect(links).toContain('https://dummyjson.com/products/1');
   });
 });
